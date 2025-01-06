@@ -1,0 +1,52 @@
+import requests
+
+def test_login_api(api_url, test_cases):
+    """
+    Test the login API with the given test cases.
+
+    Args:
+        api_url (str): The URL of the login API.
+        test_cases (list): A list of dictionaries with 'username', 'password', and 'expected_status'.
+
+    Returns:
+        None
+    """
+    for i, case in enumerate(test_cases):
+        print(f"\nTest Case {i + 1}:")
+        try:
+            # Send a POST request with the username and password
+            response = requests.post(api_url, json={
+                'username': case['username'],
+                'password': case['password']
+            })
+
+            # Parse the response
+            if response.status_code == case['expected_status']:
+                print(f"PASS: Status Code {response.status_code} as expected.")
+
+                # Check for token on successful login
+                if response.status_code == 200:
+                    data = response.json()
+                    if 'token' in data:
+                        print("PASS: Token received.")
+                    else:
+                        print("FAIL: Token not found in response.")
+            else:
+                print(f"FAIL: Expected status {case['expected_status']}, but got {response.status_code}.")
+
+        except Exception as e:
+            print(f"ERROR: Exception occurred - {e}")
+
+if __name__ == "__main__":
+    # API URL
+    login_api_url = "https://www.saucedemo.com/" 
+
+    # Test cases
+    test_cases = [
+        {"Username": "valid_user", "password": "valid_pass", "expected_status": 200},
+        {"username": "invalid_user", "password": "valid_pass", "expected_status": 401},
+        {"username": "", "password": "", "expected_status": 400},
+    ]
+
+    # Run the tests
+    test_login_api(login_api_url, test_cases)
