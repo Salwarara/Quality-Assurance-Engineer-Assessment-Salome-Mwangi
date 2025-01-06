@@ -1,0 +1,18 @@
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import ItemList from './ItemList';
+
+describe('ItemList Component', () => {
+  it('renders the correct number of items', () => {
+    const items = ['Apple', 'Banana', 'Cherry'];
+    
+    // Render the component with the items prop
+    render(<ItemList items={items} />);
+    
+    // Find all <li> elements
+    const listItems = screen.getAllByRole('listitem');
+    
+    // Verify the number of rendered items matches the length of the items array
+    expect(listItems).toHaveLength(items.length);
+  });
+});
